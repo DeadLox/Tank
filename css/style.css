@@ -1,0 +1,51 @@
+html, body {
+	font-family:Arial, Helvetica, sans-serif;
+	margin: 0;
+	padding:0;
+	height:100%;
+}
+
+/* ---- LOG ---- */
+#log {
+	position:fixed;
+	bottom:0;
+	overflow:auto;
+	width:100%;
+	height:100px;
+	margin:0 auto;
+	padding:5px;
+	border-top:1px solid black;
+	background-color: #ccc;
+}
+
+#log p {
+	margin:0;
+	display: inline;
+}
+
+/* ---- GAMEZONE ---- */
+#gameZone {
+	width:auto;
+	height:100%;
+	position: relative;
+}
+
+/* ---- TANK ---- */
+.tank {
+	width:15px;
+	height:15px;
+	position: absolute;
+	background-color: red;
+}
+
+.event {
+	color:#999;
+}
+
+.important {
+	color:red;
+}
+
+.warning {
+	color:orange;
+}
