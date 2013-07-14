@@ -2,7 +2,12 @@
 var c;
 var ctx;
 var tank;
-var then = Date.now();
+var FPS = 100;
+
+var rightKey = false;
+var leftKey = false;
+var upKey = false;
+var downKey = false;
 
 $(document).ready(function(){
 	c = document.getElementById("gameZone");
@@ -16,26 +21,36 @@ $(document).ready(function(){
 
 	// Ecoute les actions sur le claviers
 	$(document).keydown(function(e){
-		tank.move(e.keyCode);
+		onKeyDown(e);
+	})
+	$(document).keyup(function(e){
+		onKeyUp(e);
 	})
 
-	setInterval(main, 1000 / 60);
+	setInterval(function(){
+		update();
+		render();
+	}, 1000/FPS);
 });
 
-function main(){
-	var now = Date.now();
-	var delta = now - then;
-	
-	render();
-
-	then = now;
+function update(){
 }
 
 function render(){
-	clearCanvas();
-	ctx.drawImage(tank.image, tank.clipX, tank.clipY, tank.width, tank.height, tank.x, tank.y, tank.width, tank.height);
+	ctx.clearRect(0, 0, c.width, c.height);
+	tank.draw();
 }
 
-function clearCanvas(){
-	ctx.clearRect(0, 0, c.width, c.height);
+function onKeyDown(evt) {
+	if (evt.keyCode == 39) rightKey = true;
+	else if (evt.keyCode == 37) leftKey = true;
+	else if (evt.keyCode == 38) upKey = true;
+	else if (evt.keyCode == 40) downKey = true;
+}
+
+function onKeyUp(evt) {
+  if (evt.keyCode == 39) rightKey = false;
+  else if (evt.keyCode == 37) leftKey = false;
+  else if (evt.keyCode == 38) upKey = false;
+  else if (evt.keyCode == 40) downKey = false;
 }
