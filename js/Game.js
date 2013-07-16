@@ -1,7 +1,7 @@
 // Récupère le Context du Canvas
 var c;
 var ctx;
-var tank;
+var tank, fire;
 var FPS = 100;
 
 var rightKey = false;
@@ -18,6 +18,7 @@ $(document).ready(function(){
 
   	// Crée un Tank
 	tank = new Tank("DeadLox");
+	fire = new Fire();
 
 	// Ecoute les actions sur le claviers
 	$(document).keydown(function(e){
@@ -39,6 +40,7 @@ function update(){
 function render(){
 	ctx.clearRect(0, 0, c.width, c.height);
 	tank.draw();
+	fire.draw();
 }
 
 function onKeyDown(evt) {

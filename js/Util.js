@@ -6,6 +6,12 @@ function logger(key, value){
 	}
 }
 function arr(num, nbDec) {
-	var mult = 10 * nbDec;
+	var mult = Math.pow(10, nbDec);
 	return Math.round(num * mult) / mult;
+}
+function toDeg(rad){
+	return rad * (180 / Math.PI);
+}
+function toRad(deg){
+	return deg * (Math.PI / 180);
 }

@@ -6,7 +6,7 @@ function Tank(name) {
 	this.xMov = 0;
 	this.yMov = 0;
 	this.rotateZ = 0;
-	this.pasRotate = 0.5;
+	this.pasRotate = 1;
 	this.angle = 0;
 	this.width = 62;
 	this.height = 68;
@@ -14,63 +14,64 @@ function Tank(name) {
 	this.clipY = 4;
 	this.speed = 1;
 	this.acceleration = 0;
-	this.maxAcceleration = 3;
-	this.lastMove = 0;
+	this.maxAcceleration = 2;
+	this.pasAcceleration = 0.01;
 	this.image = new Image();
 	this.image.src = 'img/sprites_tanks.png';
 
-	var TO_RADIANS = Math.PI/180;
-
 	/* DEBUG */
-	this.enableDebug = false;
+	this.enableDebug = true;
 	this.DEBUGDrawMultiplier = 50;
 
 	this.draw = function(){
 		this.move();
 		ctx.save();
 		ctx.translate(this.x + this.height/2, this.y + this.width/2);
-		ctx.rotate(this.rotateZ * TO_RADIANS);
+		ctx.rotate(toRad(this.rotateZ));
 		ctx.drawImage(this.image, this.clipX, this.clipY, this.width, this.height, -this.width/2, -this.height/2, this.width, this.height);
 
-		// Droite angle
-		ctx.beginPath();
-		ctx.moveTo(0, 0);
-		ctx.lineTo(0, -150);
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = 'black';
-		ctx.stroke();
+		if (this.enableDebug) {
+			// Droite angle
+			ctx.beginPath();
+			ctx.moveTo(0, 0);
+			ctx.lineTo(0, -150);
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'black';
+			ctx.stroke();
+		}
 
 		ctx.restore();
 
-		ctx.beginPath();
-		// Droite verticale
-		ctx.moveTo(this.x + this.width/2 + 3, this.y + this.height/2 - 150 - 3);
-		ctx.lineTo(this.x + this.width/2 + 3, this.y + this.height/2 - 3);
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = 'black';
-		ctx.stroke();
-		ctx.beginPath();
-		// Angle de rotation
-		ctx.arc(this.x + this.width/2 + 3, this.y + this.height/2 - 3, 50, 270 * TO_RADIANS, (this.rotateZ-90) * TO_RADIANS, false);
-		ctx.lineWidth = 5;
-		ctx.strokeStyle = 'black';
-		ctx.stroke();
+		if (this.enableDebug){ 
+			ctx.beginPath();
+			// Droite verticale
+			ctx.moveTo(this.x + this.width/2 + 3, this.y + this.height/2 - 150 - 3);
+			ctx.lineTo(this.x + this.width/2 + 3, this.y + this.height/2 - 3);
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'black';
+			ctx.stroke();
+			ctx.beginPath();
+			// Angle de rotation
+			ctx.arc(this.x + this.width/2 + 3, this.y + this.height/2 - 3, 50, toRad(270), toRad(this.rotateZ-90), false);
+			ctx.lineWidth = 5;
+			ctx.strokeStyle = 'black';
+			ctx.stroke();
 
-		ctx.beginPath();
-		// Droite axe X
-		ctx.moveTo(this.x + this.width/2 + 3, this.y + this.height/2 - 3);
-		ctx.lineTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3);
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = 'red';
-		ctx.stroke();
-		// Droite axe Y
-		ctx.moveTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3);
-		ctx.lineTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3 + (this.yMov*this.DEBUGDrawMultiplier));
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = 'blue';
-		ctx.stroke();
-		ctx.beginPath();
-
+			ctx.beginPath();
+			// Droite axe X
+			ctx.moveTo(this.x + this.width/2 + 3, this.y + this.height/2 - 3);
+			ctx.lineTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3);
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'red';
+			ctx.stroke();
+			// Droite axe Y
+			ctx.moveTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3);
+			ctx.lineTo(this.x + this.width/2 + 3 + (this.xMov*this.DEBUGDrawMultiplier), this.y + this.height/2 - 3 + (this.yMov*this.DEBUGDrawMultiplier));
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = 'blue';
+			ctx.stroke();
+			ctx.beginPath();
+		}	
 		this.debug();
 	}
 
@@ -106,7 +107,7 @@ function Tank(name) {
 		this.accelerate();
 	}
 	this.accelerate = function(){
-		//this.acceleration++;
+		this.acceleration = arr(this.acceleration + this.pasAcceleration, 2);
 		if (this.acceleration > this.maxAcceleration) this.acceleration = this.maxAcceleration; 
 	}
 	this.calcAngle = function(){
@@ -129,17 +130,17 @@ function Tank(name) {
 		}
 	}
 	this.calcX = function(){
-		var movX = arr(Math.cos(this.angle * TO_RADIANS), 2) * this.z;
+		var movX = arr(arr(Math.cos(toRad(this.angle)), 2) * this.z, 2);
 		return movX;
 	}
 	this.calcY = function(){
-		var movY = arr(Math.sin(this.angle * TO_RADIANS), 2) / this.z;
+		var movY = arr(arr(Math.sin(toRad(this.angle)), 2) * this.z, 2);
 		return movY;
 	}
 	this.calcMove = function(){
 		this.calcMov();
-		this.x += this.xMov;
-		this.y += this.yMov;
+		this.x = arr(this.x + this.xMov, 2);
+		this.y = arr(this.y + this.yMov, 2);
 	}
 	this.debug = function(){
 		logger('x', this.x);
