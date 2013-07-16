@@ -39,12 +39,12 @@ class Server extends Socket
 						$this->log('Socket error: ' . socket_strerror(socket_last_error($ressource)));
 						continue;
 					} else {
-						$client = new Connection($this, $ressource);						
-						$this->clients[$ressource] = $client;
+						$client = new Connection($this, $ressource);
+						$this->clients[(int) $ressource] = $client;
 						$this->allsockets[] = $ressource;
 					}
 				} else {
-					$client = $this->clients[$socket];
+					$client = $this->clients[(int) $socket];
 					$bytes = @socket_recv($socket, $data, 4096, 0);
 					if ($bytes === 0) {
 						$client->disconnect();
@@ -85,7 +85,7 @@ class Server extends Socket
 	 */
 	public function removeClient($resource) {
 		$client = $this->clients[$resource];
-		unset($this->clients[$resource]);
+		unset($this->clients[(int) $resource]);
 		$index = array_search($resource, $this->allsockets);
 		unset($this->allsockets[$index]);
 		unset($client);

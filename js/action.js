@@ -10,6 +10,8 @@ var application = 'tank';
 	// le pseudo du visiteur
 var pseudo = '';
 
+var colors = ['black', 'red', 'blue', 'green'];
+
 	// retourne un élément en fonction de son ID
 function getid(a) {
 	return document.getElementById(a);
@@ -47,7 +49,7 @@ window.onload = function() {
 	// demande à l'utilisateur un pseudo, on vérifie en même temps s'il n'est pas déjà pris
 function selectName() {
 	var payload = new Object();				
-	payload['action'] = 'nickselect';
+	payload['action'] = 'changePos';
 	payload['data'] = prompt('Pseudo :');	
 	socket.send(payload);	
 }
@@ -64,28 +66,47 @@ function send()	{
 	getid('text').value = "";
 }
 
+function sendPosition()	{
+	var tank = $('#myTank');
+	var posX = $('#myTank').offset().left;
+	var posY = $('#myTank').offset().top;
+	
+	var payload = new Object();				
+	payload['action'] = 'msg';
+	payload['data'] = posX;	
+				
+	socket.send(payload);
+}
+
 	// affiche un message
 function echo(text) {
 	getid('log').innerHTML += text + "<br>";
 }
 
 function loadTank() {
-	$('#gameZone').prepend('<div class="tank"></div>')
+	var color = generateColor();
+	$('#gameZone').append('<div id="myTank" class="tank" style="background-color: '+color+';"></div>')
+}
+
+function generateColor(){
+	var nb = Math.round((Math.random() * 10) + 1);
+	if (nb > 3) nb = generateColor();
+	return colors[nb];
 }
 
 function move(keyCode){
 	switch(keyCode){
 		case keyCode = 37:
-			echo("Touche gauche");
+			$('#myTank').css({'left':'-=1px'});
 			break;
 		case keyCode = 38:
-			echo("Touche haut");
+			$('#myTank').css({'top':'-=1px'});
 			break;
 		case keyCode = 39:
-			echo("Touche droite");
+			$('#myTank').css({'left':'+=1px'});
 			break;
 		case keyCode = 40:
-			echo("Touche bas");
+			$('#myTank').css({'top':'+=1px'});
 			break;
 	}
 }
