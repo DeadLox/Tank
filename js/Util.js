@@ -5,3 +5,7 @@ function logger(key, value){
 		$('#log').append('<div class="'+key+'">'+key+': </span>'+value+'</div>');
 	}
 }
+function arr(num, nbDec) {
+	var mult = 10 * nbDec;
+	return Math.round(num * mult) / mult;
+}
